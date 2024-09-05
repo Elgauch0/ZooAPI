@@ -17,6 +17,12 @@
         "symfony/yaml": "7.1.*"
     },
     "require-dev": {
+        "doctrine/dbal": "^3",
+        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-fixtures-bundle": "^3.6",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
+        "doctrine/orm": "^3.2",
+        "symfony/maker-bundle": "^1.61"
     },
     "config": {
         "allow-plugins": {
