@@ -2,39 +2,57 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+
+use JsonSerializable;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Validator\Constraints as Assert;
+
+
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_product'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['show_product'])]
+    #[Assert\NotBlank(message: "Le titre du livre est obligatoire")]
     private ?string $username = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['show_product'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['show_product'])]
     private ?string $prénom = null;
 
     /**
      * @var Collection<int, Role>
      */
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+    #[Ignore]
     private Collection $role;
 
     /**
      * @var Collection<int, RapportVeterinaire>
      */
     #[ORM\OneToMany(targetEntity: RapportVeterinaire::class, mappedBy: 'veterinaire')]
+    #[Ignore]
     private Collection $rapport;
+
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
 
     public function __construct()
     {
@@ -135,5 +153,27 @@ class User
         }
 
         return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'nom' => $this->nom,
+            'prénom' => $this->prénom,
+
+        ];
     }
 }
